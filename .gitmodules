@@ -1,0 +1,3 @@
+[submodule "compressm"]
+	path = compressm
+	url = https://github.com/camail-official/compressm
