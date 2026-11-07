@@ -37,7 +37,7 @@ class DiscreteSSM:
     def from_numpy(cls, *, A: np.ndarray, B: np.ndarray, C: np.ndarray, D: np.ndarray):
         A, B, C, D = (np.asarray(matrix) for matrix in (A, B, C, D))
         if A.ndim != 2 or A.shape[0] != A.shape[1] or A.shape[0] == 0:
-            raise ValueError("A must be a non-empty square matrix")
+            raise ValueError ("A must be a non-empty square matrix")
         if B.ndim != 2 or B.shape[0] != A.shape[0]:
             raise ValueError("B must be a matrix with the same number of rows as A")
         if C.ndim != 2 or C.shape[1] != A.shape[0]:
@@ -84,6 +84,33 @@ class DiscreteSSM:
             A_log=sd['ssm.A_log'], B=sd['ssm.B'], C=sd['ssm.C'], D=sd['ssm.D'], dt=dt
         )
 
+@dataclass(frozen=True)
+class DiagonalDiscreteSSM:
+    lam: np.ndarray
+    B: np.ndarray
+    C: np.ndarray
+    D: np.ndarray
+
+    @property
+    def n(self):
+        return self.lam.shape[0]
+
+    @classmethod
+    def from_lru_numpy(cls, *, nu_log, theta_log, B_re, B_im, gamma_log, C_re, C_im, D):
+        lam = np.exp(-np.exp(nu_log) + 1j * np.exp(theta_log))
+        B = (B_re + 1j * B_im) * np.exp(gamma_log)[:, None]
+        C = C_re + 1j * C_im
+        return cls(lam=lam, B=B, C=C, D=D)
+
+    @classmethod
+    def from_lru_module(cls, module: nn.Module):
+        p = {k: tensor_to_numpy(v) for k, v in module.named_parameters()}
+        return cls.from_lru_numpy(
+            nu_log = p['nu_log'], theta_log=p['theta_log'],
+            B_re=p['B_re'], B_im=p['B_im'], gamma_log=p['gamma_log'],
+            C_re=p['C_re'], C_im=p['C_im'], D=p['D'],
+        )
+
 
 @dataclass(frozen=True)
 class ReducedSSM:
@@ -101,10 +128,22 @@ def tensor_to_numpy(x: torch.Tensor) -> np.ndarray:
 
 class CompreSSM:
     @staticmethod
+    def calculate_gramians_diagonal(lam: np.ndarray, *, B: np.ndarray, C: np.ndarray):
+        denom = 1.0 - lam[:, None] * lam.conj()[None, :]
+        P = (B @ B.conj().T) / denom
+        Q = (C.conj().T @ C) / denom.conj()
+        return (P + P.conj().T) / 2, (Q + Q.conj().T) / 2
+
+    @staticmethod
     def calculate_gramians(A: np.ndarray, *, B: np.ndarray, C: np.ndarray):
         P = solve_discrete_lyapunov(A, B @ B.conj().T)
         Q = solve_discrete_lyapunov(A.conj().T, C.conj().T @ C)
         return (P + P.conj().T) / 2, (Q + Q.conj().T) / 2
+
+    @staticmethod
+    def diagnolize_reduced(Ar: np.ndarray, Br: np.ndarray, Cr: np.ndarray):
+        lam_r, V = np.linalg.eig(Ar)
+        return lam_r, np.linalg.solve(V, Br), Cr @ V
 
     @staticmethod
     def calculate_sqrt(P: np.ndarray, *, Q: np.ndarray):

@@ -36,6 +36,10 @@ def sMNIST_experiment():
 
         print(f"Finished. Results saved to {log_path}")
 
+def implementation_sMINST_expirement():
+    results_dir = Path("results/implementation")
+    results_dir.mkdir(parents=True, exist_ok=True)
+
 
 if __name__ == "__main__":
     sMNIST_experiment()
