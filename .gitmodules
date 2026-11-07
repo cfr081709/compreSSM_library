@@ -1,3 +1,6 @@
 [submodule "compressm"]
 	path = compressm
 	url = https://github.com/camail-official/compressm
+[submodule "tests/implementation_verification/compressm"]
+	path = tests/implementation_verification/compressm
+	url = https://github.com/camail-official/compressm
