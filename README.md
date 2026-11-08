@@ -64,6 +64,8 @@ small enough compared with the original system.
 The `D` (direct-feedthrough) matrix is retained unchanged during reduction. The
 reported balanced-truncation error bound assumes a stable, minimal system.
 
+For details on every class and function, see the [full API documentation](docs.md).
+
 ## Development
 
 Install the package and test dependencies, then run the test suite:
