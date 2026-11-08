@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "compreSSM-library"
+version = "0.1.0"
+description = "Balanced-truncation tools for compressing state-space models"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Christian Rafferty" }]
+dependencies = [
+    "numpy>=1.24",
+    "pydantic>=2.0",
+    "scipy>=1.10",
+    "torch>=2.0",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=7.0"]
+
+[project.urls]
+Homepage = "https://github.com/cfr081709/compreSSM_library"
+Repository = "https://github.com/cfr081709/compreSSM_library"
+Issues = "https://github.com/cfr081709/compreSSM_library/issues"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+py-modules = ["core"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
