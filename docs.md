@@ -8,7 +8,7 @@ transitions and adapters for compatible PyTorch modules.
 ## Installation
 
 ```bash
-python -m pip install compreSSM-library
+python -m pip install compressm
 ```
 
 The package requires Python 3.10 or later. Its public module is named `core`:

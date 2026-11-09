@@ -8,7 +8,7 @@ values, reduced systems, and an error bound for each reduction.
 ## Installation
 
 ```bash
-python -m pip install compreSSM-library
+python -m pip install compressm
 ```
 
 The package requires Python 3.10 or later. PyTorch is a runtime dependency
