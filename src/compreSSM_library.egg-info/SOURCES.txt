@@ -1,0 +1,10 @@
+LICENSE
+README.md
+pyproject.toml
+src/core.py
+src/compreSSM_library.egg-info/PKG-INFO
+src/compreSSM_library.egg-info/SOURCES.txt
+src/compreSSM_library.egg-info/dependency_links.txt
+src/compreSSM_library.egg-info/requires.txt
+src/compreSSM_library.egg-info/top_level.txt
+tests/test_compression.py
